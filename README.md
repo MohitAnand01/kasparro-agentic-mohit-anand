@@ -51,27 +51,33 @@
   git clone https://github.com/MohitAnand01/kasparro-ai-agentic-content-generation-system-mohit-anand.git
   cd kasparro-ai-agentic-content-generation-system-mohit-anand
 
+   ```
+
   ## 2️⃣ (Optional) Create a Virtual Environment
 
   ### Windows:
   ```bash
   python -m venv venv
   venv\Scripts\activate
+  ```
+  ##3️⃣ Install Dependencies
 
-3️⃣ Install Dependencies
-
-Even though this project has minimal dependencies, install them via:
+  #Even though this project has minimal dependencies, install them via:
+```bash
 
 pip install -r requirements.txt
+```
 
-4️⃣ Run the Pipeline
+##4️⃣ Run the Pipeline
 
-Run the orchestrator using:
+#Run the orchestrator using:
+```bash
 
 python src/main.py
+```
 
 
-After execution, the system will generate output JSON files inside:
+###After execution, the system will generate output JSON files inside:
 
 outputs/
 ├── product_page.json
