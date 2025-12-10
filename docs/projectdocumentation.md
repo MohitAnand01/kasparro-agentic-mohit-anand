@@ -79,7 +79,7 @@ This design is modular, testable, and easily extendable (LLMs, APIs, UI).
 
 ---
 
-# 4. System Design (Most Important Section)    
+# 4. System Design   
 
 This system follows a **four-stage agentic pipeline**, with each stage producing structured intermediate artifacts stored in a shared **PageContext** object.  
 The architecture ensures strict single-responsibility and well-defined input/output boundaries.
@@ -92,15 +92,12 @@ The architecture ensures strict single-responsibility and well-defined input/out
 flowchart TD
 
     A[Raw Product Data] --> B[ParserAgent<br/>Create Models + PageContext]
-
     B --> C[QuestionGeneratorAgent<br/>Generate 15+ Categorized Questions]
-
     C --> D[ContentPlannerAgent<br/>Map Questions → FAQ Items Using Logic Blocks]
-
     D --> E[PageAssemblerAgent<br/>Build Product + Comparison Pages via Templates]
-
     E --> F[FAQ Template<br/>Generate FAQ Page]
 
     F --> G1[faq.json]
     E --> G2[product_page.json]
     E --> G3[comparison_page.json]
+
