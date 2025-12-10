@@ -1,4 +1,4 @@
-content: |
+
   # 🌟 Kasparro Multi-Agent Content Generation System
   ### Applied AI Engineer Challenge — Official Submission  
   **Author:** Mohit Anand  
