@@ -76,11 +76,12 @@ Run the orchestrator using:
 python src/main.py
 ```
 
+  ### After execution, the system will generate output JSON files inside:
 
-### After execution, the system will generate output JSON files inside:
+  ```text
+  outputs/
+  ├── product_page.json
+  ├── faq.json
+  └── comparison_page.json
 
-outputs/
-├── product_page.json
-├── faq.json
-└── comparison_page.json
 
