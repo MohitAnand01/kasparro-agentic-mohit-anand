@@ -1,30 +1,52 @@
-# Kasparro – Multi-Agent Content Generation System (GlowBoost)
+content: |
+  # 🌟 Kasparro Multi-Agent Content Generation System
+  ### Applied AI Engineer Challenge — Official Submission  
+  **Author:** Mohit Anand  
 
-This repo implements a modular, agentic automation system that takes a small product dataset (GlowBoost Vitamin C Serum) and generates three structured JSON content pages:
+  ---
 
-- `outputs/faq.json`
-- `outputs/product_page.json`
-- `outputs/comparison_page.json`
+  ## 📌 Overview
 
-The system is built as a multi-agent pipeline with clear agent boundaries, reusable content logic blocks, and a small template engine.
+  This repository contains a **multi-agent content generation system** built for the Kasparro Applied AI Engineer Challenge.  
+  The system transforms a small, fixed product dataset (GlowBoost Vitamin C Serum) into **three structured JSON pages**:
 
----
+  - `product_page.json`  
+  - `faq.json`  
+  - `comparison_page.json`
 
-## Project Structure
+  The architecture follows a **four-agent pipeline**, each with a single responsibility:
 
-```text
-.
-├── docs/
-│   └── projectdocumentation.md
-├── outputs/
-│   ├── faq.json
-│   ├── product_page.json
-│   └── comparison_page.json
-├── src/
-│   ├── agents/
-│   ├── core/
-│   ├── data/
-│   ├── logic_blocks/
-│   ├── orchestrator/
-│   └── templates/
-└── venv/ (local virtualenv, not required in repo)
+  1. **ParserAgent** — Builds internal product models & initializes PageContext  
+  2. **QuestionGeneratorAgent** — Produces categorized customer questions  
+  3. **ContentPlannerAgent** — Converts questions into FAQ items using logic blocks  
+  4. **PageAssemblerAgent** — Uses templates to construct JSON pages  
+
+  This design is deterministic, modular, scalable, and created exactly per assignment specifications.
+
+  ---
+
+  ## 🏗️ System Features
+
+  - ✔ Multi-agent automation pipeline  
+  - ✔ Reusable logic blocks (benefits, safety, usage, comparison)  
+  - ✔ Custom template engine for JSON generation  
+  - ✔ Clean and strict PageContext data modeling  
+  - ✔ Zero external dependencies for content generation  
+  - ✔ Clean, validated JSON outputs  
+  - ✔ Full documentation with diagrams  
+  - ✔ Ready for future AI/LLM extensions  
+
+  Full documentation is available at:  
+  ➜ `docs/projectdocumentation.md`
+
+  ---
+
+  # 🚀 How to Run This Project Locally
+
+  Follow these steps to run the system on your computer.
+
+  ## 1️⃣ Clone the Repository
+
+  ```bash
+  git clone https://github.com/MohitAnand01/kasparro-ai-agentic-content-generation-system-mohit-anand.git
+  cd kasparro-ai-agentic-content-generation-system-mohit-anand
