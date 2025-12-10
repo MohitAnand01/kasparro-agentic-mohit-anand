@@ -1,234 +1,106 @@
+# 📘 Multi-Agent Content Generation System  
+### Kasparro – Applied AI Engineer Challenge  
+### Author: Mohit Anand  
 
-  # 📘 Multi-Agent Content Generation System — Project Documentation  
-  ### Kasparro Applied AI Engineer Challenge  
-  ### Author: Mohit Anand  
+---
 
-  ---
+# 1. Problem Statement    
 
-  # 1. Problem Statement  
+Design and implement a **modular agentic automation system** that transforms a small product dataset into three structured, machine-readable content pages:
 
-  Build a **modular agentic automation system** that consumes a small product dataset (GlowBoost Vitamin C Serum) and autonomously generates **structured, machine-readable JSON pages**:
+- FAQ Page (minimum 5 Q&As)  
+- Product Description Page  
+- Comparison Page (GlowBoost vs fictional Product B)  
 
-  - Product Description Page  
-  - FAQ Page (minimum 5 Q&As)  
-  - Comparison Page (GlowBoost vs fictional Product B)  
+The system must satisfy these requirements:
 
-  The system must:
+- Use **multiple independent agents**, not a monolith  
+- Demonstrate an **automation flow / orchestration graph**  
+- Use **reusable content logic blocks**  
+- Use your **own template engine**  
+- Output **clean JSON files**  
+- Use **only the provided dataset** (no external facts or research)  
 
-  - Use **multiple agents**, not a single monolith  
-  - Contain **reusable content logic blocks**  
-  - Implement your **own template engine**  
-  - Output **clean JSON**  
-  - Execute via an **orchestrated automation flow**  
-  - Use **ONLY the provided dataset** — no external knowledge, no web research  
+This challenge evaluates **system design**, **architecture**, **automation**, and **agent orchestration**, not content writing.
 
-  This challenge evaluates system design, agent orchestration, abstraction, and engineering maturity — **not writing skills**.  
+---
 
-  ---
+# 2. Solution Overview  
 
-  # 2. Solution Overview  
+The solution is built as a **deterministic four-agent system** guided by a central orchestrator. Rather than writing content directly, each agent performs a single responsibility, transforming structured data through a controlled pipeline.
 
-  The solution is implemented as a **4-agent pipeline** supported by modular content blocks and templates.  
-  The core idea:
+### The four agents are:
 
-  - Convert raw product → internal models  
-  - Generate categorized questions  
-  - Transform questions → FAQ items using logic blocks  
-  - Assemble structured JSON pages using templates  
-  - Orchestrate end-to-end execution using a controller  
+1. **ParserAgent**  
+   Converts raw input into strongly typed internal models and initializes PageContext.
 
-  The system demonstrates:  
-  ✔ clear agent boundaries  
-  ✔ reusable logic functions  
-  ✔ template-defined page composition  
-  ✔ full JSON output for all pages  
-  ✔ deterministic, non-LLM, rule-based generation  
-  ✔ extensibility for future AI/LLM integration  
+2. **QuestionGeneratorAgent**  
+   Generates ≥15 categorized user questions based solely on input data.
 
-  ---
+3. **ContentPlannerAgent**  
+   Converts questions into structured FAQ items using reusable logic blocks.
 
-  # 3. Scopes & Assumptions  
+4. **PageAssemblerAgent**  
+   Uses templates + logic blocks to generate final JSON pages.
 
-  **In Scope**  
-  - Using only the fixed GlowBoost dataset provided in the assignment  
-  - Multi-agent deterministic processing  
-  - Autonomous question generation  
-  - FAQ creation using logic blocks  
-  - Template-driven page assembly  
-  - JSON output in `/outputs`  
+Supporting components:
 
-  **Out of Scope**  
-  - No external API calls  
-  - No UI or website  
-  - No GPT or external LLM calls  
-  - No new facts beyond the dataset  
-  - No real Product B — must be fictional but structured  
+- **Logic Blocks** → benefit extraction, safety synthesis, usage rules, product comparison  
+- **Template Engine** → user-defined JSON shaping for all pages  
+- **Orchestrator** → executes the multi-agent workflow end-to-end  
 
-  **Assumptions**  
-  - Input dataset will always follow the predefined shape  
-  - The system must run entirely offline  
-  - Future extensions (LLMs, APIs, UI) should be easily integrable  
+This design is modular, testable, and easily extendable (LLMs, APIs, UI).
 
-  ---
+---
 
-  # 4. System Design (Most Important Section)    
+# 3. Scopes & Assumptions  
 
-  The system is engineered as a **four-stage agent pipeline**, each stage producing structured intermediate artifacts stored in a shared `PageContext` object.
+### ✅ In Scope
 
-  ## 4.1 Architecture Diagram  
+- Parsing only the provided GlowBoost dataset  
+- Deterministic question generation  
+- FAQ creation  
+- Template-driven page construction  
+- JSON-only outputs  
+- Multi-agent workflow coordination  
 
-  ```mermaid
-  flowchart TD
+### ❌ Out of Scope
 
-      A[Raw Product Data] --> B[ParserAgent<br/>Create Models + PageContext]
-      B --> C[QuestionGeneratorAgent<br/>Generate 15+ Categorized Questions]
-      C --> D[ContentPlannerAgent<br/>Map Questions → FAQ Items using Logic Blocks]
-      D --> E[PageAssemblerAgent<br/>Templates Build Product & Comparison Pages]
-      E --> F[FAQ Template<br/>Build FAQ Page]
+- External data sources, APIs, or internet lookup  
+- LLM or GPT content generation  
+- UI / website / frontend  
+- Creative rewriting or fact invention  
 
-      F --> G1[faq.json]
-      E --> G2[product_page.json]
-      E --> G3[comparison_page.json]
+### Assumptions
 
-  ## 4.2 ParserAgent  
+- Dataset will always follow the provided schema  
+- System must run fully offline  
+- Future upgrades should require minimal architectural changes  
 
-  **Purpose:**  
-  Convert raw product data into structured internal models and initialize the shared PageContext.
+---
 
-  **Responsibilities:**  
-  - Parse raw dictionary into a `Product` object.  
-  - Create a `FictionalProduct` for comparison.  
-  - Initialize `PageContext` containing:  
-    - base product  
-    - fictional product  
-    - empty lists for generated questions  
-    - empty list for FAQ items  
-    - placeholders for product & comparison pages  
+# 4. System Design (Most Important Section)    
 
-  **Output:**  
-  A fully structured PageContext object passed to the next agent.
+This system follows a **four-stage agentic pipeline**, with each stage producing structured intermediate artifacts stored in a shared **PageContext** object.  
+The architecture ensures strict single-responsibility and well-defined input/output boundaries.
 
-  ---
+---
 
-  ## 4.3 QuestionGeneratorAgent  
+## 4.1 Architecture Diagram  
 
-  **Purpose:**  
-  Generate realistic customer-style questions derived from the product attributes.
+```mermaid
+flowchart TD
 
-  **Responsibilities:**  
-  - Analyze product characteristics.  
-  - Generate ≥15 categorized questions across:  
-    - Informational  
-    - Usage  
-    - Safety  
-    - Purchase  
-    - Comparison  
-  - Populate `context.generated_questions`.  
+    A[Raw Product Data] --> B[ParserAgent<br/>Create Models + PageContext]
 
-  **Output:**  
-  A comprehensive question set for FAQ creation.
+    B --> C[QuestionGeneratorAgent<br/>Generate 15+ Categorized Questions]
 
-  ---
+    C --> D[ContentPlannerAgent<br/>Map Questions → FAQ Items Using Logic Blocks]
 
-  ## 4.4 ContentPlannerAgent  
+    D --> E[PageAssemblerAgent<br/>Build Product + Comparison Pages via Templates]
 
-  **Purpose:**  
-  Convert generated questions into FAQ items using reusable logic blocks.
+    E --> F[FAQ Template<br/>Generate FAQ Page]
 
-  **Responsibilities:**  
-  - Map each question to the appropriate logic block.  
-  - Produce a structured FAQItem containing:  
-    - question  
-    - answer  
-    - category  
-  - Append formatted FAQ entries into `context.faqs`.  
-
-  **Output:**  
-  A complete list of FAQ items ready for page assembly.
-
-  ---
-
-  ## 4.5 PageAssemblerAgent  
-
-  **Purpose:**  
-  Build the final JSON-ready product, comparison, and FAQ pages using templates.
-
-  **Responsibilities:**  
-  - Apply templates:  
-    - `product_template`  
-    - `comparison_template`  
-    - `faq_template`  
-  - Combine logic block outputs + PageContext data.  
-  - Fill:  
-    - `context.product_page_data`  
-    - `context.comparison_page_data`  
-    - `context.faq_page_data`  
-
-  **Output:**  
-  Final assembled dictionaries for all three pages.
-
-  ---
-
-  # 5. JSON Output Specification  
-
-  The system generates **three structured JSON outputs**, each satisfying the assignment’s requirements.
-
-  ## 5.1 product_page.json  
-  Contains:  
-  - product name  
-  - concentration  
-  - skin suitability  
-  - ingredient list  
-  - benefits summary  
-  - usage instructions  
-  - safety notes  
-  - price  
-
-  ## 5.2 faq.json  
-  Contains:  
-  - at least 5 FAQ items  
-  - each containing:  
-    - question  
-    - answer  
-    - category  
-
-  ## 5.3 comparison_page.json  
-  Contains:  
-  - summary of GlowBoost  
-  - summary of fictional Product B  
-  - structured comparison of:  
-    - ingredients  
-    - benefits  
-    - usage  
-    - price  
-
-  ---
-
-  # 6. Assignment Compliance Summary  
-
-  The system fully meets all engineering and design expectations outlined in the assignment.
-
-  **✓ Multi-agent modular architecture**  
-  Each agent has a clearly defined responsibility and isolated processing logic.
-
-  **✓ Reusable content logic blocks**  
-  Benefits, safety, usage, and comparison blocks ensure consistent text generation.
-
-  **✓ Template-based JSON page generation**  
-  All outputs follow predefined templates ensuring predictable structure.
-
-  **✓ Complete automation pipeline (orchestrator)**  
-  A single orchestrator executes all steps in sequence.
-
-  **✓ Outputs three clean JSON pages**  
-  Required: product, FAQ, and comparison pages.
-
-  **✓ No external data sources used**  
-  Only the provided GlowBoost dataset is referenced, as required.
-
-  **✓ Documentation includes diagrams, explanation, and architecture**  
-  Satisfies the assignment’s documentation standard.
-
-  **✓ Extendable and production-ready structure**  
-  Future LLM/AI integrations can be plugged in without redesign.
-
+    F --> G1[faq.json]
+    E --> G2[product_page.json]
+    E --> G3[comparison_page.json]
